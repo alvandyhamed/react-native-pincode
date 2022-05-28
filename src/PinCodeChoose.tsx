@@ -71,6 +71,7 @@ export interface IProps {
   validationRegex?: RegExp
   vibrationEnabled?: boolean
   delayBetweenAttempts?: number
+  hasAnimation?:boolean
 }
 
 export type IState = {
@@ -191,6 +192,7 @@ class PinCodeChoose extends React.PureComponent<IProps, IState> {
             }
             validationRegex={this.props.validationRegex}
             vibrationEnabled={this.props.vibrationEnabled}
+            hasAnimation={this.props.hasAnimation}
           />
         )}
         {this.state.status === PinStatus.confirm && (
@@ -264,6 +266,7 @@ class PinCodeChoose extends React.PureComponent<IProps, IState> {
             styleViewTitle={this.props.styleViewTitle}
             vibrationEnabled={this.props.vibrationEnabled}
             delayBetweenAttempts={this.props.delayBetweenAttempts}
+            hasAnimation={this.props.hasAnimation}
           />
         )}
       </View>

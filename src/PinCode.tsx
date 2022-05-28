@@ -86,6 +86,7 @@ export interface IProps {
   validationRegex?: RegExp
   vibrationEnabled?: boolean
   delayBetweenAttempts?: number;
+  hasAnimation?:boolean;
 }
 
 export interface IState {
@@ -138,6 +139,7 @@ class PinCode extends React.PureComponent<IProps, IState> {
     textPasswordVisibleSize: 22,
     vibrationEnabled: true,
     delayBetweenAttempts: 3000,
+    hasAnimation:true
   }
 
   private readonly _circleSizeEmpty: number;
@@ -236,6 +238,8 @@ class PinCode extends React.PureComponent<IProps, IState> {
   };
 
   renderButtonNumber = (text: string) => {
+    const {hasAnimation}=this.props;
+    
     let alphanumericMap = new Map([
       ["1", " "],
       ["2", "ABC"],
@@ -252,69 +256,126 @@ class PinCode extends React.PureComponent<IProps, IState> {
       (this.state.password.length === this.props.passwordLength ||
         this.state.showError) &&
       !this.state.attemptFailed;
-    return (
-      <Animate
-        show={true}
-        start={{
-          opacity: 1
-        }}
-        update={{
-          opacity: [
-            this.state.showError && !this.state.attemptFailed ? 0.5 : 1
-          ],
-          timing: { duration: 200, ease: easeLinear }
-        }}>
-        {({ opacity }: any) => (
-          <TouchableHighlight
-            style={[
-              styles.buttonCircle,
-              { backgroundColor: this.props.colorCircleButtons },
-              this.props.styleButtonCircle,
-            ]}
-            underlayColor={this.props.numbersButtonOverlayColor}
-            disabled={disabled}
-            onShowUnderlay={() => this.setState({ textButtonSelected: text })}
-            onHideUnderlay={() => this.setState({ textButtonSelected: "" })}
-            onPress={() => {
-              this.onPressButtonNumber(text);
+      if(hasAnimation){
+        return (
+          <Animate
+            show={true}
+            start={{
+              opacity: 1
             }}
-            accessible
-            accessibilityLabel={text}>
-            <View>
-            <Text
-              style={[
-                styles.text,
-                this.props.styleTextButton,
-                {
-                  opacity: opacity,
-                  color: this.state.textButtonSelected === text
-                    ? this.props.styleColorButtonTitleSelected
-                    : this.props.styleColorButtonTitle
-                }
-              ]}>
-              {text}
-            </Text>
-            {((this.props.alphabetCharsVisible) &&
-              <Text
+            update={{
+              opacity: [
+                this.state.showError && !this.state.attemptFailed ? 0.5 : 1
+              ],
+              timing: { duration: 200, ease: easeLinear }
+            }}>
+            {({ opacity }: any) => (
+              <TouchableHighlight
                 style={[
-                  styles.tinytext,
-                  this.props.styleAlphabet,
-                {
-                  opacity: opacity,
-                  color: this.state.textButtonSelected === text
-                    ? this.props.styleColorButtonTitleSelected
-                    : this.props.styleColorButtonTitle
-                }
-                ]}>
-                {alphanumericMap.get(text)}
-              </Text>
+                  styles.buttonCircle,
+                  { backgroundColor: this.props.colorCircleButtons },
+                  this.props.styleButtonCircle,
+                ]}
+                underlayColor={this.props.numbersButtonOverlayColor}
+                disabled={disabled}
+                onShowUnderlay={() => this.setState({ textButtonSelected: text })}
+                onHideUnderlay={() => this.setState({ textButtonSelected: "" })}
+                onPress={() => {
+                  this.onPressButtonNumber(text);
+                }}
+                accessible
+                accessibilityLabel={text}>
+                <View>
+                <Text
+                  style={[
+                    styles.text,
+                    this.props.styleTextButton,
+                    {
+                      opacity: opacity,
+                      color: this.state.textButtonSelected === text
+                        ? this.props.styleColorButtonTitleSelected
+                        : this.props.styleColorButtonTitle
+                    }
+                  ]}>
+                  {text}
+                </Text>
+                {((this.props.alphabetCharsVisible) &&
+                  <Text
+                    style={[
+                      styles.tinytext,
+                      this.props.styleAlphabet,
+                    {
+                      opacity: opacity,
+                      color: this.state.textButtonSelected === text
+                        ? this.props.styleColorButtonTitleSelected
+                        : this.props.styleColorButtonTitle
+                    }
+                    ]}>
+                    {alphanumericMap.get(text)}
+                  </Text>
+                )}
+                </View>
+              </TouchableHighlight>
             )}
-            </View>
-          </TouchableHighlight>
-        )}
-      </Animate>
-    );
+          </Animate>
+        );
+      }else {
+        return (
+          <View>
+            {({ opacity }: any) => (
+              <TouchableHighlight
+                style={[
+                  styles.buttonCircle,
+                  { backgroundColor: this.props.colorCircleButtons },
+                  this.props.styleButtonCircle,
+                ]}
+                underlayColor={this.props.numbersButtonOverlayColor}
+                disabled={disabled}
+                onShowUnderlay={() => this.setState({ textButtonSelected: text })}
+                onHideUnderlay={() => this.setState({ textButtonSelected: "" })}
+                onPress={() => {
+                  this.onPressButtonNumber(text);
+                }}
+                accessible
+                accessibilityLabel={text}>
+                <View>
+                <Text
+                  style={[
+                    styles.text,
+                    this.props.styleTextButton,
+                    {
+                      opacity: opacity,
+                      color: this.state.textButtonSelected === text
+                        ? this.props.styleColorButtonTitleSelected
+                        : this.props.styleColorButtonTitle
+                    }
+                  ]}>
+                  {text}
+                </Text>
+                {((this.props.alphabetCharsVisible) &&
+                  <Text
+                    style={[
+                      styles.tinytext,
+                      this.props.styleAlphabet,
+                    {
+                      opacity: opacity,
+                      color: this.state.textButtonSelected === text
+                        ? this.props.styleColorButtonTitleSelected
+                        : this.props.styleColorButtonTitle
+                    }
+                    ]}>
+                    {alphanumericMap.get(text)}
+                  </Text>
+                )}
+                </View>
+              </TouchableHighlight>
+            )}
+          </View>
+        );
+      }
+    
   };
+ 
 
   endProcess = (pwd: string) => {
     setTimeout(() => {
@@ -577,6 +638,7 @@ class PinCode extends React.PureComponent<IProps, IState> {
 
   render() {
     const { password, showError, attemptFailed, changeScreen } = this.state;
+    const {hasAnimation}=this.props;
     return (
       <View
         style={[
